@@ -7,6 +7,7 @@ def render_attrs(attrs, xhtml=False, exclude=[]):
     is_false = ['false', 'none', 'null']
 
     for key, value in attrs.items():
+        if key.startswith('_'): key = key[1:]
         key = key.replace('_', '-')
 
         if key not in exclude:
@@ -33,13 +34,13 @@ def render_attrs(attrs, xhtml=False, exclude=[]):
 
 
 def render_tag(tag, content=None, _single=False, _xhtml=False, **attrs):
-    attrs = render_attrs(attrs, xhtml=xhtml)
+    attrs = render_attrs(attrs, xhtml=_xhtml)
     html = '<' + tag
 
     if attrs:
         html += ' ' + attrs
 
-    html += ' />' if xhtml and not (content or closeable) else '>'
+    html += ' />' if _xhtml and not (content or closeable) else '>'
 
     if content:
         html += content
@@ -51,7 +52,7 @@ def render_tag(tag, content=None, _single=False, _xhtml=False, **attrs):
 
 
 def parse_attrs(atts_str, exclude=[]):
-    atts = OrderedDict()
+    attrs = OrderedDict()
 
     in_value = False
     attr_name = ''
@@ -59,6 +60,9 @@ def parse_attrs(atts_str, exclude=[]):
 
     for char in atts_str:
         if char == ' ' and not in_value:
+            if buffer:
+                attrs[fix_attr_name(buffer)] = True
+                buffer = ''
             continue
 
         if char == '=':
@@ -69,18 +73,28 @@ def parse_attrs(atts_str, exclude=[]):
 
         if char == '"':
             if in_value:
-                atts[attr_name] = buffer
+                attrs[fix_attr_name(attr_name)] = buffer
                 in_value = False
                 buffer = ''
             else:
                 in_value = True
+            continue
 
         buffer += char
+
+    if buffer and not in_value:
+        attrs[fix_attr_name(buffer)] = True
+
+    return attrs
+
+
+def fix_attr_name(attr_name):
+    return attr_name.replace('-', '_')
 
 
 class HtmlTags:
     tags_preset = {
-        t: {'_single': True} for t in ('input', 'link', 'img', 'br'),
+        tag: {'_single': True} for tag in ('input', 'link', 'img', 'br')
     }
 
     def __init__(self, xhtml=False):

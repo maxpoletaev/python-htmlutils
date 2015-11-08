@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='django-goodforms',
+    name='htmlutils',
     version='0.1.0',
     description='',
     keywords='html',
