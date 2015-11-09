@@ -1,4 +1,4 @@
-from htmlutils import parse_attrs, render_attrs, tags
+from htmlutils import parse_attrs, render_attrs, render_tag, tags
 from collections import OrderedDict
 from unittest import TestCase
 
@@ -21,4 +21,12 @@ class TestHtml(TestCase):
         self.assertEqual(result, expect)
 
     def test_render_tag(self):
-        self.assertEqual(tags.h1('hello', _class='heading'), '<h1 class="heading">hello</h1>')
+        self.assertEqual(
+            render_tag('input', required=True, _xhtml=True, _single=True),
+            '<input required="required" />',
+        )
+        self.assertEqual(
+            tags.h1('hello', _class='heading'),
+            '<h1 class="heading">hello</h1>',
+        )
+        self.assertEqual(tags.input(required=True), '<input required>')
