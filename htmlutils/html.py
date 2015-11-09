@@ -40,12 +40,12 @@ def render_tag(tag, content=None, _single=False, _xhtml=False, **attrs):
     if attrs:
         html += ' ' + attrs
 
-    html += ' />' if _xhtml and not (content or closeable) else '>'
+    html += ' />' if _xhtml and (not content or not _single) else '>'
 
     if content:
         html += content
 
-    if content or closeable:
+    if content or not _single:
         html += '</%s>' % tag
 
     return html
@@ -106,7 +106,7 @@ class HtmlTags:
             if tag_name in self.tags_preset:
                 merged_attrs = self.tags_preset[tag_name]
             merged_attrs.update(attrs)
-            return render_tag(tag_name, content, xhtml=self.xhtml, **merged_attrs)
+            return render_tag(tag_name, content, _xhtml=self.xhtml, **merged_attrs)
         return wrapper
 
 
