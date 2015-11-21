@@ -7,18 +7,27 @@ Html utils
    :alt: Build Status
 
 
-Utils
------
+Usage
+=====
 
-htmlutils.tags
-~~~~~~~~~~~~~~
+tags.tag(content: str, **attrs) -> str
+--------------------------------------
 
-Render Html tags as ``tags.h1('hello', _class='heading')``.
+Render HTML tags as ``tags.h1('hello', _class='heading')``.
 
+htmlutils.parse_attrs(attrs: str) -> dict
+-----------------------------------------
+
+Parse a string like ``class="input" type="text" required`` into ``dict``.
+
+htmlutils.render_attrs(attrs: dict) -> str
+------------------------------------------
+
+Render ``dict`` to string like ``class="input" type="text" required``.
 
 
 Running tests
--------------
+=============
 
 ::
 
