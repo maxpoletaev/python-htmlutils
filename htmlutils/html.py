@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+SINGLE_TAGS = ('input', 'link', 'img', 'br')
+
 
 def render_attrs(attrs, xhtml=False, exclude=[]):
     result = []
@@ -18,7 +20,7 @@ def render_attrs(attrs, xhtml=False, exclude=[]):
                     else:
                         result.append(key)
             else:
-                if type(value) !=  str:
+                if type(value) != str:
                     value = str(value)
 
                 if value.lower() in is_true:
@@ -90,8 +92,6 @@ def parse_attrs(atts_str, exclude=[]):
 
     return attrs
 
-
-SINGLE_TAGS = ('input', 'link', 'img', 'br')
 
 class HtmlTags:
     def __init__(self, xhtml=False):
