@@ -58,6 +58,9 @@ def parse_attrs(atts_str, exclude=[]):
     attr_name = ''
     buffer = ''
 
+    def fix_attr_name(attr_name):
+        return attr_name.replace('-', '_')
+
     for char in atts_str:
         if char == ' ' and not in_value:
             if buffer:
@@ -88,25 +91,20 @@ def parse_attrs(atts_str, exclude=[]):
     return attrs
 
 
-def fix_attr_name(attr_name):
-    return attr_name.replace('-', '_')
-
+SINGLE_TAGS = ('input', 'link', 'img', 'br')
 
 class HtmlTags:
-    tags_preset = {
-        tag: {'_single': True} for tag in ('input', 'link', 'img', 'br')
-    }
-
     def __init__(self, xhtml=False):
+        self.tags_preset = {tag: {'_single': True} for tag in SINGLE_TAGS}
         self.xhtml = xhtml
 
     def __getattr__(self, tag_name):
         def wrapper(content=None, **attrs):
-            merged_attrs = {}
+            final_attrs = {}
             if tag_name in self.tags_preset:
-                merged_attrs = self.tags_preset[tag_name]
-            merged_attrs.update(attrs)
-            return render_tag(tag_name, content, _xhtml=self.xhtml, **merged_attrs)
+                final_attrs.update(self.tags_preset[tag_name])
+            final_attrs.update(attrs)
+            return render_tag(tag_name, content, _xhtml=self.xhtml, **final_attrs)
         return wrapper
 
 
