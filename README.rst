@@ -1,5 +1,11 @@
+==========
 Html utils
 ==========
+
+.. image:: https://travis-ci.org/zenwalker/python-htmlutils.svg
+   :target: https://travis-ci.org/zenwalker/python-htmlutils
+   :alt: Build Status
+
 
 Utils
 -----
