@@ -53,7 +53,7 @@ def render_tag(tag, content=None, _single=False, _xhtml=False, **attrs):
     return html
 
 
-def parse_attrs(atts_str, exclude=[]):
+def parse_attrs(atts_str):
     attrs = OrderedDict()
 
     in_value = False
