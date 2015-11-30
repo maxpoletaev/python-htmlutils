@@ -56,9 +56,9 @@ def render_tag(tag, content=None, _single=False, _xhtml=False, **attrs):
 def parse_attrs(atts_str):
     attrs = OrderedDict()
 
+    buffer = StringBuffer()
     in_value = False
     attr_name = ''
-    buffer = ''
 
     def fix_attr_name(attr_name):
         return attr_name.replace('-', '_')
@@ -66,21 +66,22 @@ def parse_attrs(atts_str):
     for char in atts_str:
         if char == ' ' and not in_value:
             if buffer:
-                attrs[fix_attr_name(buffer)] = True
-                buffer = ''
+                attr_name = str(buffer)
+                attrs[fix_attr_name(attr_name)] = True
+                buffer = StringBuffer()
             continue
 
         if char == '=':
             if not in_value:
-                attr_name = buffer
-                buffer = ''
+                attr_name = str(buffer)
+                buffer = StringBuffer()
             continue
 
         if char == '"':
             if in_value:
-                attrs[fix_attr_name(attr_name)] = buffer
+                attrs[fix_attr_name(attr_name)] = str(buffer)
+                buffer = StringBuffer()
                 in_value = False
-                buffer = ''
             else:
                 in_value = True
             continue
@@ -88,7 +89,8 @@ def parse_attrs(atts_str):
         buffer += char
 
     if buffer and not in_value:
-        attrs[fix_attr_name(buffer)] = True
+        attr_name = str(buffer)
+        attrs[fix_attr_name(attr_name)] = True
 
     return attrs
 
@@ -106,6 +108,11 @@ class HtmlTags:
             final_attrs.update(attrs)
             return render_tag(tag_name, content, _xhtml=self.xhtml, **final_attrs)
         return wrapper
+
+
+class StringBuffer(list):
+    def __str__(self):
+        return ''.join(self)
 
 
 tags = HtmlTags()
